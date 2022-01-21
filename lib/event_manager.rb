@@ -3,7 +3,14 @@ require 'google/apis/civicinfo_v2'
 require 'erb'
 
 def clean_zipcode(zipcode)
-  zipcode.to_s.rjust(5,"0")[0..4]
+  zipcode.to_s.rjust(5, '0')[0..4]
+end
+
+def clean_phone_number(phone_num)
+  num = phone_num.to_s.gsub(/\D+/, '')
+  return num if num.length == 10
+
+  num.length == 11 && num[0] == '1' ? num[1..-1] : '0000000000'
 end
 
 def legislators_by_zipcode(zip)
@@ -21,7 +28,7 @@ def legislators_by_zipcode(zip)
   end
 end
 
-def save_thank_you_letter(id,form_letter)
+def save_thank_you_letter(id, form_letter)
   Dir.mkdir('output') unless Dir.exist?('output')
 
   filename = "output/thanks_#{id}.html"
@@ -47,8 +54,18 @@ contents.each do |row|
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode])
   legislators = legislators_by_zipcode(zipcode)
+  phone = clean_phone_number(row[:homephone])
 
-  form_letter = erb_template.result(binding)
+  #form_letter = erb_template.result(binding)
 
-  save_thank_you_letter(id,form_letter)
+  #save_thank_you_letter(id, form_letter)
+  puts "#{name} #{zipcode} #{phone}"
+
+  begin
+    legislators.each do |legislator|
+      puts "  Representative: #{legislator.name}"
+    end
+  rescue
+    puts '  Find your Rep Online'
+  end
 end
