@@ -39,6 +39,8 @@ def save_thank_you_letter(id, form_letter)
 end
 
 puts 'EventManager initialized.'
+registered_hours_count = Hash.new
+registered_days_of_week = Hash.new
 
 contents = CSV.open(
   'event_attendees.csv',
@@ -56,16 +58,16 @@ contents.each do |row|
   legislators = legislators_by_zipcode(zipcode)
   phone = clean_phone_number(row[:homephone])
 
-  #form_letter = erb_template.result(binding)
+  reg_date = row[:regdate]
+  registered_hours_count[reg_date.hour] += 1
+  registered_days_of_week[reg_date.wday] += 1
 
-  #save_thank_you_letter(id, form_letter)
+  form_letter = erb_template.result(binding)
+  save_thank_you_letter(id, form_letter)
+
   puts "#{name} #{zipcode} #{phone}"
-
-  begin
-    legislators.each do |legislator|
-      puts "  Representative: #{legislator.name}"
-    end
-  rescue
-    puts '  Find your Rep Online'
-  end
 end
+
+
+puts "Days of the week people registered: #{registered_hours_count}"
+puts "Hours of the day people registered: #{registered_days_of_week}"
