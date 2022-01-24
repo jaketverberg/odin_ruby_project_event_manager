@@ -59,6 +59,7 @@ contents.each do |row|
   phone = clean_phone_number(row[:homephone])
 
   reg_date = row[:regdate]
+  reg_date = DateTime.strptime(reg_date, "%m/%d/%y %H:%M")
   registered_hours_count[reg_date.hour] += 1
   registered_days_of_week[reg_date.wday] += 1
 
