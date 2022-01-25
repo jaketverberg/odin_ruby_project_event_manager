@@ -61,8 +61,8 @@ contents.each do |row|
   reg_date = row[:regdate]
   reg_date = DateTime.strptime(reg_date, "%m/%d/%y %H:%M")
 
-  registered_hours_count << reg_date.hour
-  registered_days_of_week << reg_date.wday
+  registered_hours_count << reg_date.hour.to_i
+  registered_days_of_week << reg_date.wday.to_s
 
   form_letter = erb_template.result(binding)
   save_thank_you_letter(id, form_letter)
