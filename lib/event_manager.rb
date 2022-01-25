@@ -71,5 +71,5 @@ contents.each do |row|
 end
 
 
-puts "Days of the week people registered: #{registered_hours_count.tally}"
-puts "Hours of the day people registered: #{registered_days_of_week.tally}"
+puts "Days of the week people registered: #{registered_hours_count.tally.sort}"
+puts "Hours of the day people registered: #{registered_days_of_week.tally.sort}"
