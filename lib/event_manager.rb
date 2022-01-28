@@ -39,8 +39,8 @@ def save_thank_you_letter(id, form_letter)
 end
 
 puts 'EventManager initialized.'
-registered_hours_count = Array.new
-registered_days_of_week = Array.new
+registered_hours_count = Hash.new
+registered_days_of_week = Hash.new
 
 contents = CSV.open(
   'event_attendees.csv',
@@ -60,9 +60,8 @@ contents.each do |row|
 
   reg_date = row[:regdate]
   reg_date = DateTime.strptime(reg_date, "%m/%d/%y %H:%M")
-
-  registered_hours_count << reg_date.hour.to_i
-  registered_days_of_week << reg_date.wday.to_s
+  registered_hours_count[reg_date.hour] += 1
+  registered_days_of_week[reg_date.wday] += 1
 
   form_letter = erb_template.result(binding)
   save_thank_you_letter(id, form_letter)
@@ -70,6 +69,5 @@ contents.each do |row|
   puts "#{name} #{zipcode} #{phone}"
 end
 
-
-puts "Days of the week people registered: #{registered_hours_count.tally.sort}"
-puts "Hours of the day people registered: #{registered_days_of_week.tally.sort}"
+puts "Hour of the day people registered: #{registered_hours_count}"
+puts "Days of the week people registered: #{registered_days_of_week}"
